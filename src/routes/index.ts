@@ -7,6 +7,7 @@ import {
   createPost,
   getPostById,
   updatePost,
+  deletePost,
 } from "../controllers/PostController";
 
 const Routes = new Elysia({ prefix: "/posts" })
@@ -52,6 +53,9 @@ const Routes = new Elysia({ prefix: "/posts" })
         }),
       }),
     }
-  );
+  )
+
+  //route delete post
+  .delete("/:id", ({ params: { id } }) => deletePost(id));
 
 export default Routes;
