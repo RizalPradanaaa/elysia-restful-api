@@ -46,3 +46,36 @@ export async function createPost(options: { title: string; content: string }) {
     console.error(`Error creating post: ${e}`);
   }
 }
+
+/**
+ * Getting a post by ID
+ */
+export async function getPostById(id: string) {
+  try {
+    // Konversi tipe id menjadi number
+    const postId = parseInt(id);
+
+    //get post by id
+    const post = await prisma.post.findUnique({
+      where: { id: postId },
+    });
+
+    //if post not found
+    if (!post) {
+      return {
+        sucess: true,
+        message: "Detail Data Post Not Found!",
+        data: null,
+      };
+    }
+
+    //return response json
+    return {
+      success: true,
+      message: `Detail Data Post By ID : ${id}`,
+      data: post,
+    };
+  } catch (e: unknown) {
+    console.error(`Error finding post: ${e}`);
+  }
+}
