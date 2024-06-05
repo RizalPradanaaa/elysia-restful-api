@@ -79,3 +79,37 @@ export async function getPostById(id: string) {
     console.error(`Error finding post: ${e}`);
   }
 }
+
+/**
+ * Updating a post
+ */
+export async function updatePost(
+  id: string,
+  options: { title?: string; content?: string }
+) {
+  try {
+    // Konversi tipe id menjadi number
+    const postId = parseInt(id);
+
+    //get title and content
+    const { title, content } = options;
+
+    //update post with prisma
+    const post = await prisma.post.update({
+      where: { id: postId },
+      data: {
+        ...(title ? { title } : {}),
+        ...(content ? { content } : {}),
+      },
+    });
+
+    //return response json
+    return {
+      success: true,
+      message: "Post Updated Successfully!",
+      data: post,
+    };
+  } catch (e: unknown) {
+    console.error(`Error updating post: ${e}`);
+  }
+}
