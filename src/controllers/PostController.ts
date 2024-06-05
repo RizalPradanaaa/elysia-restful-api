@@ -1,6 +1,12 @@
 //import prisma client
 import prisma from "../../prisma/client";
 
+const findById = async (id: number): Promise<any> => {
+  return await prisma.post.findUnique({
+    where: { id: id },
+  });
+};
+
 /**
  * Getting all posts
  */
@@ -56,9 +62,7 @@ export async function getPostById(id: string) {
     const postId = parseInt(id);
 
     //get post by id
-    const post = await prisma.post.findUnique({
-      where: { id: postId },
-    });
+    const post = await findById(postId);
 
     //if post not found
     if (!post) {
@@ -91,11 +95,22 @@ export async function updatePost(
     // Konversi tipe id menjadi number
     const postId = parseInt(id);
 
+    let post = await findById(postId);
+
+    //if post not found
+    if (!post) {
+      return {
+        sucess: true,
+        message: "Data Post Not Found!",
+        data: null,
+      };
+    }
+
     //get title and content
     const { title, content } = options;
 
     //update post with prisma
-    const post = await prisma.post.update({
+    post = await prisma.post.update({
       where: { id: postId },
       data: {
         ...(title ? { title } : {}),
@@ -121,6 +136,17 @@ export async function deletePost(id: string) {
   try {
     // Konversi tipe id menjadi number
     const postId = parseInt(id);
+
+    const post = await findById(postId);
+
+    //if post not found
+    if (!post) {
+      return {
+        sucess: true,
+        message: "Data Post Not Found!",
+        data: null,
+      };
+    }
 
     //delete post with prisma
     await prisma.post.delete({
